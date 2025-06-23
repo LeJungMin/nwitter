@@ -6,7 +6,7 @@ import { ref, uploadString, getDownloadURL } from "firebase/storage";
 import {v4 as uuidv4} from "uuid"
 import NweetFactory from "components/NweetFactory";
 
-const Home = ( userObj ) => {
+const Home = ({ userObj }) => {
     const [nweet, setNweet] = useState("");
     const [nweets, setNweets] = useState([]);
     const getNweets = async() => {
@@ -43,7 +43,7 @@ const Home = ( userObj ) => {
                 // <div key={nweet.id}>
                 //     <h4>{nweet.text}</h4>
                 // </div>
-                <Nweet key={nweet.id} nweetObj={nweet} isOwner={nweet.creatorId === userObj.uid}/>
+                <Nweet key={nweet.id} nweetObj={nweet} isOwner={nweet.creatorId === userObj?.uid}/>
             ))}
         </div>
     </div>

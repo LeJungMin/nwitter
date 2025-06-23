@@ -13,7 +13,9 @@ const Nweet = ({ nweetObj, isOwner }) => {
     const ok = window.confirm("Are you sure you want to delete this nweet?");
     if (ok) {
         await deleteDoc(NweetTextRef );
-        await deleteObject(ref(storageService, nweetObj.attachmentUrl));
+        if (nweetObj.attachmentUrl) {
+            await deleteObject(ref(storageService, nweetObj.attachmentUrl));
+        }
     }
   };
   const toggleEditing = () => setEditing((prev) => !prev);
@@ -54,8 +56,9 @@ const Nweet = ({ nweetObj, isOwner }) => {
         <>
           <h4>{nweetObj.text}</h4>
           {nweetObj.attachmentUrl && (
-            <img src={nweetObj.attachmentUrl} />
+            <img src={nweetObj.attachmentUrl} alt="Nweet attachment" />
           )}
+          {isOwner && (
             <div className="nweet__actions">
               <span onClick={onDeleteClick}>
                 <FontAwesomeIcon icon={faTrash} />
@@ -64,6 +67,7 @@ const Nweet = ({ nweetObj, isOwner }) => {
                 <FontAwesomeIcon icon={faPencilAlt} />
               </span>
             </div>
+          )}
         </>
       )}
     </div>

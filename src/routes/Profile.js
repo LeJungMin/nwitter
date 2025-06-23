@@ -5,44 +5,47 @@ import { useHistory } from 'react-router-dom';
 import { collection, getDocs, query, where } from "@firebase/firestore";
 import { updateProfile } from "@firebase/auth";
 
-export default ({refreshUser, userObj}) => {
+const Profile = ({refreshUser, userObj}) => {
     const history = useHistory();
-    const [newDisplayName, setNewDisplayName] = useState(userObj.displayName ?? "USER");
+    const [newDisplayName, setNewDisplayName] = useState(userObj?.displayName ?? "USER");
+    
     const onLogOutClick = () => {
         authService.signOut();
         history.push('/')
     }
+    
     const getMyNweets = async () => {
+        if (!userObj?.uid) return;
+        
         const q = query(
-        collection(dbService, "nweets"),
-        where("creatorId", "==", userObj.uid)
-    );
-    const querySnapshot = await getDocs(q);
+            collection(dbService, "nweets"),
+            where("creatorId", "==", userObj.uid)
+        );
+        const querySnapshot = await getDocs(q);
         querySnapshot.forEach((doc) => {
             console.log(doc.id, " => ", doc.data());
         });
     };
+    
     const onchange = (event) => {
         const {
             target: {value},
         } = event;
         setNewDisplayName(value);
     }
+    
     const onSubmit = async (event) => {
         event.preventDefault();
-        // if(userObj.displayName !== newDisplayName){
-        //     await userObj.updateProfile({
-        //         displayName: newDisplayName,
-        //     })
-        // }
-        if(userObj.displayName !== newDisplayName){
+        if(userObj?.displayName !== newDisplayName){
             await updateProfile(authService.currentUser, { displayName: newDisplayName });
             refreshUser();
         }
     }
+    
     useEffect(() => {
         getMyNweets();
     }, [])
+    
     return (
         <div className="container">
             <form onSubmit={onSubmit} className="profileForm">
@@ -69,3 +72,5 @@ export default ({refreshUser, userObj}) => {
         </div>
     );
 };
+
+export default Profile;

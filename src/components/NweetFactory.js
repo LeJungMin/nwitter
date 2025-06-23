@@ -14,6 +14,13 @@ const NweetFactory = ({userObj}) => {
             return;
           }
         event.preventDefault();
+        
+        // userObj가 없으면 트윗 작성을 막습니다
+        if (!userObj || !userObj.uid) {
+            console.error("User not logged in");
+            return;
+        }
+        
         let attachmentUrl = "";
         if (attachment !== "") {
             const attachmentRef = ref(storageService, `${userObj.uid}/${v4()}`);
@@ -26,6 +33,8 @@ const NweetFactory = ({userObj}) => {
             creatorId: userObj.uid,
             attachmentUrl
         }
+        console.log("Creating nweet with userObj:", userObj);
+        console.log("Nweet object:", nweetObj);
         addDoc(collection(dbService, 'nweets'), nweetObj)
         setNweet('');
         setAttachment('');
@@ -77,6 +86,7 @@ const NweetFactory = ({userObj}) => {
         <div className="factoryForm__attachment">
             <img
             src={attachment}
+            alt="attachment preview"
             style={{
                 backgroundImage: attachment,
             }}
